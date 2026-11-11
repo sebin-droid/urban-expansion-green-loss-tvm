@@ -1,0 +1,2 @@
+transactions,frequent_itemsets,min_support,min_confidence,base_conversion_rate_pct,conversion_rules,stayed_green_rules
+182192,112441,0.003,0.1,7.42,146,17

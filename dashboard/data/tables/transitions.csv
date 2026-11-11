@@ -1,0 +1,101 @@
+period,from_class,from_name,to_class,to_name,km2
+2000-2010,1,Built-up,1,Built-up,33.2
+2000-2010,1,Built-up,2,Tree cover,0.0
+2000-2010,1,Built-up,3,Other vegetation,0.0
+2000-2010,1,Built-up,4,Water,0.0
+2000-2010,1,Built-up,5,Bare/sand,0.0
+2000-2010,2,Tree cover,1,Built-up,0.817
+2000-2010,2,Tree cover,2,Tree cover,70.179
+2000-2010,2,Tree cover,3,Other vegetation,6.655
+2000-2010,2,Tree cover,4,Water,0.019
+2000-2010,2,Tree cover,5,Bare/sand,0.584
+2000-2010,3,Other vegetation,1,Built-up,4.445
+2000-2010,3,Other vegetation,2,Tree cover,5.478
+2000-2010,3,Other vegetation,3,Other vegetation,75.74
+2000-2010,3,Other vegetation,4,Water,0.052
+2000-2010,3,Other vegetation,5,Bare/sand,1.183
+2000-2010,4,Water,1,Built-up,0.003
+2000-2010,4,Water,2,Tree cover,0.082
+2000-2010,4,Water,3,Other vegetation,0.023
+2000-2010,4,Water,4,Water,1.243
+2000-2010,4,Water,5,Bare/sand,0.033
+2000-2010,5,Bare/sand,1,Built-up,1.192
+2000-2010,5,Bare/sand,2,Tree cover,0.955
+2000-2010,5,Bare/sand,3,Other vegetation,2.384
+2000-2010,5,Bare/sand,4,Water,0.153
+2000-2010,5,Bare/sand,5,Bare/sand,8.257
+2010-2017,1,Built-up,1,Built-up,39.658
+2010-2017,1,Built-up,2,Tree cover,0.0
+2010-2017,1,Built-up,3,Other vegetation,0.0
+2010-2017,1,Built-up,4,Water,0.0
+2010-2017,1,Built-up,5,Bare/sand,0.0
+2010-2017,2,Tree cover,1,Built-up,0.402
+2010-2017,2,Tree cover,2,Tree cover,70.248
+2010-2017,2,Tree cover,3,Other vegetation,5.518
+2010-2017,2,Tree cover,4,Water,0.031
+2010-2017,2,Tree cover,5,Bare/sand,0.496
+2010-2017,3,Other vegetation,1,Built-up,2.54
+2010-2017,3,Other vegetation,2,Tree cover,3.016
+2010-2017,3,Other vegetation,3,Other vegetation,78.349
+2010-2017,3,Other vegetation,4,Water,0.062
+2010-2017,3,Other vegetation,5,Bare/sand,0.836
+2010-2017,4,Water,1,Built-up,0.002
+2010-2017,4,Water,2,Tree cover,0.209
+2010-2017,4,Water,3,Other vegetation,0.063
+2010-2017,4,Water,4,Water,0.918
+2010-2017,4,Water,5,Bare/sand,0.275
+2010-2017,5,Bare/sand,1,Built-up,1.18
+2010-2017,5,Bare/sand,2,Tree cover,0.418
+2010-2017,5,Bare/sand,3,Other vegetation,1.534
+2010-2017,5,Bare/sand,4,Water,0.11
+2010-2017,5,Bare/sand,5,Bare/sand,6.816
+2017-2025,1,Built-up,1,Built-up,43.781
+2017-2025,1,Built-up,2,Tree cover,0.0
+2017-2025,1,Built-up,3,Other vegetation,0.0
+2017-2025,1,Built-up,4,Water,0.0
+2017-2025,1,Built-up,5,Bare/sand,0.0
+2017-2025,2,Tree cover,1,Built-up,0.492
+2017-2025,2,Tree cover,2,Tree cover,68.516
+2017-2025,2,Tree cover,3,Other vegetation,4.48
+2017-2025,2,Tree cover,4,Water,0.031
+2017-2025,2,Tree cover,5,Bare/sand,0.371
+2017-2025,3,Other vegetation,1,Built-up,2.939
+2017-2025,3,Other vegetation,2,Tree cover,3.699
+2017-2025,3,Other vegetation,3,Other vegetation,78.469
+2017-2025,3,Other vegetation,4,Water,0.022
+2017-2025,3,Other vegetation,5,Bare/sand,0.333
+2017-2025,4,Water,1,Built-up,0.012
+2017-2025,4,Water,2,Tree cover,0.076
+2017-2025,4,Water,3,Other vegetation,0.093
+2017-2025,4,Water,4,Water,0.717
+2017-2025,4,Water,5,Bare/sand,0.222
+2017-2025,5,Bare/sand,1,Built-up,1.577
+2017-2025,5,Bare/sand,2,Tree cover,0.517
+2017-2025,5,Bare/sand,3,Other vegetation,1.869
+2017-2025,5,Bare/sand,4,Water,0.086
+2017-2025,5,Bare/sand,5,Bare/sand,4.374
+2000-2025,1,Built-up,1,Built-up,33.2
+2000-2025,1,Built-up,2,Tree cover,0.0
+2000-2025,1,Built-up,3,Other vegetation,0.0
+2000-2025,1,Built-up,4,Water,0.0
+2000-2025,1,Built-up,5,Bare/sand,0.0
+2000-2025,2,Tree cover,1,Built-up,2.288
+2000-2025,2,Tree cover,2,Tree cover,61.933
+2000-2025,2,Tree cover,3,Other vegetation,13.544
+2000-2025,2,Tree cover,4,Water,0.011
+2000-2025,2,Tree cover,5,Bare/sand,0.479
+2000-2025,3,Other vegetation,1,Built-up,9.879
+2000-2025,3,Other vegetation,2,Tree cover,8.823
+2000-2025,3,Other vegetation,3,Other vegetation,67.51
+2000-2025,3,Other vegetation,4,Water,0.128
+2000-2025,3,Other vegetation,5,Bare/sand,0.559
+2000-2025,4,Water,1,Built-up,0.018
+2000-2025,4,Water,2,Tree cover,0.242
+2000-2025,4,Water,3,Other vegetation,0.216
+2000-2025,4,Water,4,Water,0.425
+2000-2025,4,Water,5,Bare/sand,0.483
+2000-2025,5,Bare/sand,1,Built-up,3.416
+2000-2025,5,Bare/sand,2,Tree cover,1.811
+2000-2025,5,Bare/sand,3,Other vegetation,3.641
+2000-2025,5,Bare/sand,4,Water,0.293
+2000-2025,5,Bare/sand,5,Bare/sand,3.779

@@ -1,0 +1,18 @@
+outcome,rule,antecedent_km2,km2,support,confidence,lift
+stayed green,osm=forest,2.46,2.44,0.0149,0.993,1.07
+stayed green,osm=agriculture,2.69,2.67,0.0163,0.993,1.07
+stayed green,osm=wetland,2.18,2.14,0.013,0.98,1.06
+stayed green,centre=>10km,34.51,33.5,0.2043,0.971,1.05
+stayed green,veg2000=tree,77.77,75.48,0.4603,0.971,1.05
+stayed green,elev=>60m,15.13,14.74,0.0899,0.974,1.05
+stayed green,centre=6-10km,59.36,57.05,0.3479,0.961,1.04
+stayed green,road=>500m,40.07,38.65,0.2357,0.965,1.04
+stayed green,ward_density_2000=low,90.81,87.85,0.5358,0.967,1.04
+stayed green,technopark=2-5km,35.39,33.95,0.207,0.959,1.04
+stayed green,built_around_2000=low,125.82,121.39,0.7403,0.965,1.04
+stayed green,slope=steep,33.57,32.33,0.1972,0.963,1.04
+stayed green,osm=other,0.67,0.64,0.0039,0.957,1.03
+stayed green,technopark=<2km,9.22,8.75,0.0534,0.949,1.03
+stayed green,osm=institutional,1.4,1.33,0.0081,0.952,1.03
+stayed green,elev=30-60m,69.74,65.85,0.4016,0.944,1.02
+stayed green,road=250-500m,49.67,46.36,0.2827,0.933,1.01

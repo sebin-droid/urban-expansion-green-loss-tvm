@@ -1,0 +1,5 @@
+scheme,spearman_vs_equal,top20_overlap_with_equal
+equal,1.0,20
+loss_pressure,0.967,16
+climate_risk,0.984,18
+people,0.983,19

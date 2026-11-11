@@ -1,0 +1,8 @@
+metric,value,p_sim
+"Moran's I, hexagon green->built km2",0.485,0.001
+"Moran's I, ward green change pp 2000-2025",0.343,0.001
+Gi* hot hexagons (p<=0.05),262.0,
+Gi* hot hexagons after FDR (q=0.05),115.0,
+Green->built km2 in hot hexagons (p<=0.05),4.55,
+DBSCAN clusters,250.0,
+Green->built pixels in DBSCAN clusters (%),57.5,

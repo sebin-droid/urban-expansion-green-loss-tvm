@@ -1,0 +1,7 @@
+composite,year,n_train,n_test,overall_accuracy,kappa,f1_Built-up,f1_Tree cover,f1_Other vegetation,f1_Water,f1_Bare/sand,dw_2019_built_pct,ghsl_2020_built_surface_pct,dw_2025_built_pct,ghsl_2025_built_surface_pct,ghsl_2000_built_surface_pct,ghsl_2010_built_surface_pct,dw_2017_built_pct,ghsl_2015_built_surface_pct
+sentinel2_2019,2019,6857,3143,0.959,0.9484,0.926,0.966,0.924,1.0,0.964,77.34,21.2,,,,,,
+sentinel2_2025,2025,6786,3214,0.958,0.9468,0.962,0.933,0.944,1.0,0.967,,,81.25,21.3,,,,
+landsat_2000,2000,6989,3011,0.7091,0.635,0.722,0.692,0.428,0.984,0.78,,,81.3,,13.16,,,
+landsat_2010,2010,6741,3259,0.7573,0.6956,0.699,0.738,0.509,0.96,0.857,,,81.3,,,18.22,,
+landsat_2017,2017,6990,3010,0.8233,0.7782,0.724,0.814,0.592,0.994,0.914,,,,,,,70.41,20.75
+landsat_2025,2025,7154,2846,0.8187,0.7729,0.771,0.817,0.609,0.993,0.932,,,81.3,21.3,,,,

@@ -1,0 +1,21 @@
+points,method,label,join_operator,seconds,matched,points_per_second
+100336,spark_nested_loop,"Spark, no spatial optimisation (nested loop)",BroadcastNestedLoopJoin,4.407,52887.0,22767.0
+100336,sedona_broadcast,Sedona broadcast index join (R-tree),BroadcastIndexJoin,0.312,52887.0,321590.0
+100336,sedona_kdbtree,"Sedona partitioned join, KDB-tree + R-tree",RangeJoin,1.132,52887.0,88636.0
+100336,sedona_quadtree,"Sedona partitioned join, Quadtree + R-tree",RangeJoin,0.674,52887.0,148866.0
+100336,geopandas,"GeoPandas sjoin (single machine, STRtree)",STRtree,0.039,,2572718.0
+500539,spark_nested_loop,"Spark, no spatial optimisation (nested loop)",BroadcastNestedLoopJoin,19.586,263524.0,25556.0
+500539,sedona_broadcast,Sedona broadcast index join (R-tree),BroadcastIndexJoin,0.37,263524.0,1352808.0
+500539,sedona_kdbtree,"Sedona partitioned join, KDB-tree + R-tree",RangeJoin,3.026,263524.0,165413.0
+500539,sedona_quadtree,"Sedona partitioned join, Quadtree + R-tree",RangeJoin,1.925,263524.0,260020.0
+500539,geopandas,"GeoPandas sjoin (single machine, STRtree)",STRtree,0.309,,1619867.0
+1001312,spark_nested_loop,"Spark, no spatial optimisation (nested loop)",BroadcastNestedLoopJoin,40.153,526842.0,24937.0
+1001312,sedona_broadcast,Sedona broadcast index join (R-tree),BroadcastIndexJoin,0.705,526842.0,1420301.0
+1001312,sedona_kdbtree,"Sedona partitioned join, KDB-tree + R-tree",RangeJoin,6.557,526842.0,152709.0
+1001312,sedona_quadtree,"Sedona partitioned join, Quadtree + R-tree",RangeJoin,3.827,526842.0,261644.0
+1001312,geopandas,"GeoPandas sjoin (single machine, STRtree)",STRtree,0.764,,1310618.0
+4044517,spark_nested_loop,"Spark, no spatial optimisation (nested loop)",BroadcastNestedLoopJoin,192.016,2127104.0,21063.0
+4044517,sedona_broadcast,Sedona broadcast index join (R-tree),BroadcastIndexJoin,3.003,2127104.0,1346826.0
+4044517,sedona_kdbtree,"Sedona partitioned join, KDB-tree + R-tree",RangeJoin,34.004,2127104.0,118942.0
+4044517,sedona_quadtree,"Sedona partitioned join, Quadtree + R-tree",RangeJoin,17.556,2127104.0,230378.0
+4044517,geopandas,"GeoPandas sjoin (single machine, STRtree)",STRtree,1.627,,2485874.0

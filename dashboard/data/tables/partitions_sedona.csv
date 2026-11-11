@@ -1,0 +1,4 @@
+scheme,partitions,points,min_points,max_points,mean_points,cv_points,mean_mbr_pct_of_extent,mbr_overlap_ratio
+Hash (Spark default),24,4044517,168521,168522,168522,0.0,99.87,23.97
+KDB-tree,33,4044517,76914,1343981,122561,1.79,2.03,0.67
+Quadtree,49,4044517,108,110087,82541,0.44,1.3,0.64

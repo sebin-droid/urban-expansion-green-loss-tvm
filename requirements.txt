@@ -1,0 +1,34 @@
+# Step 1 - base data
+geopandas
+osmnx
+matplotlib
+contextily
+
+# Step 2 - Earth Engine composites
+earthengine-api
+geemap
+geedim>=2
+rasterio
+
+# Step 3 - Random Forest classification
+scikit-learn
+scipy
+
+# Step 5 - Sedona / Spark and PostGIS (needs Java 17; Sedona jars on the driver classpath, see step5_sedona.py)
+pyspark==3.5.6
+apache-sedona==1.8.0
+setuptools          # pyspark 3.5 imports distutils, removed in Python 3.12
+pyarrow
+psycopg2-binary
+SQLAlchemy
+GeoAlchemy2
+
+# Step 6 - hotspots (Gi*, Moran), DBSCAN (scikit-learn), FP-Growth (pyspark.ml)
+esda
+libpysal
+
+# Step 7 - dashboard (run: .venv/Scripts/streamlit run dashboard/app.py)
+streamlit
+streamlit-folium
+folium
+plotly

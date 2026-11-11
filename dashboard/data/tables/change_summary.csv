@@ -1,0 +1,5 @@
+period,years,green_start_km2,green_end_km2,green_lost_km2,green_to_built_km2,green_gained_km2,built_gain_km2,net_green_change_km2,net_green_change_pct,green_lost_km2_per_year
+2000-2010,10,165.15,161.5,7.1,5.26,3.44,6.46,-3.65,-2.21,0.71
+2010-2017,7,161.5,159.35,4.37,2.94,2.22,4.12,-2.15,-1.33,0.624
+2017-2025,8,159.35,157.72,4.19,3.43,2.56,5.02,-1.63,-1.02,0.524
+2000-2025,25,165.15,157.72,13.34,12.17,5.91,15.6,-7.43,-4.5,0.534

@@ -1,0 +1,11 @@
+query,label,mode,seconds,plan_nodes
+pixel_in_ward_join,"Point-in-polygon join, 451 k pixels -> 101 wards, count per ward",gist_index,0.526,Aggregate > Nested Loop > Index Scan on wards using idx_wards_no > Index Scan on pixels30 using idx_pixels30_geom
+pixel_in_ward_join,"Point-in-polygon join, 451 k pixels -> 101 wards, count per ward",no_index,4.288,Aggregate > Gather Merge > Sort > Nested Loop > Seq Scan on pixels30 > Seq Scan on wards
+buildings_in_ward_join,203 k building centroids -> wards,gist_index,0.869,Aggregate > Gather Merge > Sort > Nested Loop > Seq Scan on buildings > Index Scan on wards using idx_wards_geom
+buildings_in_ward_join,203 k building centroids -> wards,no_index,20.601,Aggregate > Gather Merge > Sort > Nested Loop > Seq Scan on buildings > Seq Scan on wards
+range_query_1km,Range query: green->built pixels within 1 km of Technopark,gist_index,0.009,Aggregate > Bitmap Heap Scan on pixels30 > BitmapAnd > Bitmap Index Scan using idx_pixels30_change > Bitmap Index Scan using idx_pixels30_geom
+range_query_1km,Range query: green->built pixels within 1 km of Technopark,no_index,0.073,Aggregate > Gather > Seq Scan on pixels30
+knn_nearest_main_road,KNN: nearest main road for every 100th green-2000 pixel,gist_index,0.127,Gather > Seq Scan on pixels30 > Limit > Index Scan on roads using idx_roads_main_geom
+knn_nearest_main_road,KNN: nearest main road for every 100th green-2000 pixel,no_index,14.538,Seq Scan on pixels30 > Limit > Result > Sort > Seq Scan on roads
+partition_pruning,"Count green->built pixels, partitioned table",one_partition,0.01,1 of 30 partitions
+partition_pruning,"Count green->built pixels, partitioned table",all_partitions,0.076,30 of 30 partitions

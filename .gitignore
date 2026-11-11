@@ -1,0 +1,19 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+
+# All input and intermediate data (about 1 GB; several files exceed GitHub's 100 MB limit).
+# data/raw also holds the original K-SMART ward file, which contains personal data.
+/data/
+
+# Run logs and empty helper folders
+outputs/logs/
+tools/
+notebooks/
+
+# Editor / Office temporary files
+~$*
+*.tmp
+.DS_Store
+Thumbs.db

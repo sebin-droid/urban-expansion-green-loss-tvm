@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Urban Expansion and Green Space Loss, Thiruvananthapuram</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 20mm 18mm 20mm;
+    @bottom-center { content: counter(page); font-family: Cambria, Georgia, serif; font-size: 9pt; color: #555; }
+  }
+  @page :first { @bottom-center { content: none; } }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: Cambria, Georgia, "Times New Roman", serif; font-size: 10.5pt; line-height: 1.42; color: #111; background: #fff; margin: 0; }
+  h1 { font-size: 19pt; color: #1f5130; margin: 0 0 4pt; line-height: 1.2; }
+  h2 { font-size: 13pt; color: #1f5130; border-bottom: 1.2pt solid #1f5130; padding-bottom: 2pt; margin: 16pt 0 6pt; break-after: avoid; }
+  h3 { font-size: 11pt; color: #1f5130; margin: 10pt 0 3pt; break-after: avoid; }
+  p { margin: 0 0 6pt; text-align: justify; hyphens: auto; }
+  ul, ol { margin: 0 0 6pt 16pt; padding: 0; }
+  li { margin-bottom: 2pt; }
+  .meta { font-family: Calibri, Arial, sans-serif; font-size: 10pt; color: #444; margin-bottom: 10pt; }
+  .abstract { background: #f1f6f2; border-left: 3pt solid #1f5130; padding: 7pt 10pt; margin: 8pt 0 10pt; font-size: 10pt; }
+  .abstract p { margin: 0 0 4pt; }
+  .kw { font-size: 9.5pt; color: #333; }
+  figure { margin: 8pt 0 10pt; text-align: center; break-inside: avoid; }
+  figure img { max-width: 100%; }
+  figcaption { font-size: 9pt; color: #333; text-align: justify; margin-top: 3pt; }
+  table { border-collapse: collapse; width: 100%; font-family: Calibri, Arial, sans-serif; font-size: 9pt; margin: 4pt 0 4pt; break-inside: avoid; }
+  th, td { border-bottom: 0.6pt solid #bbb; padding: 2.5pt 5pt; text-align: right; }
+  th { background: #e3eee6; border-bottom: 1pt solid #1f5130; }
+  td:first-child, th:first-child { text-align: left; }
+  .tcap { font-size: 9pt; font-weight: bold; color: #1f5130; margin: 8pt 0 0; break-after: avoid; }
+  .tnote { font-size: 8.5pt; color: #444; margin: 0 0 8pt; }
+  .two { display: flex; gap: 10pt; align-items: flex-start; }
+  .two > * { flex: 1; }
+  .refs { font-size: 9pt; }
+  .refs li { margin-bottom: 1.5pt; }
+  .pb { break-before: page; }
+</style>
+</head>
+<body>
+
+<h1>Urban Expansion and Green Space Loss in Thiruvananthapuram, 2000–2025: A Spatial Big Data Analysis</h1>
+<div class="meta">Spatial Big Data – Course Project Report · MSc (Semester 3), Digital University Kerala · November 2026</div>
+
+<div class="abstract">
+<p><b>Abstract.</b> We measured how much green cover Thiruvananthapuram Municipal Corporation (101 wards, 212.7 km²) lost to urban expansion between 2000 and 2025, where the loss happened, and why. Dry-season Landsat (2000, 2010, 2017, 2025) and Sentinel-2 (2019, 2025) composites were built in Google Earth Engine and classified with Random Forest. A temporally consistent series was produced by backdating from the 2025 map and calibrating the change threshold against the Global Human Settlement Layer. The pixel data (up to 4 million points) were processed with Apache Sedona on Spark and PostgreSQL/PostGIS. Spatial statistics (Getis-Ord Gi*, DBSCAN), FP-Growth association rules and a ward priority index turned the results into decision support. Built-up land rose from 15.6% to 22.9% of the corporation while green cover fell from 77.7% to 74.2% (net −7.4 km²); 12.2 km² of green land became built-up. The conversion is clustered in the southern and central wards, concentrated near roads and existing built-up land, and is associated with higher land surface temperature. The pace of loss slowed from 0.71 km²/yr (2000–2010) to 0.52 km²/yr (2017–2025).</p>
+<p class="kw"><b>Keywords:</b> urban expansion; green space; Landsat; Sentinel-2; Random Forest; Apache Sedona; PostGIS; spatial partitioning; association rules; hotspot analysis.</p>
+</div>
+
+<h2>1. Introduction</h2>
+<p>Thiruvananthapuram, the capital of Kerala, is an unusually green city. Most of its land is not open countryside but <i>homestead</i> land: houses set among coconut palms, fruit trees and small paddy fields. This mixed pattern makes urban growth hard to see from above. A new house often replaces only part of a garden, and the canopy that remains can hide it. Over the last 25 years the city has grown along the national highway, around the Technopark IT corridor in the north, and towards the Vizhinjam port in the south. The question is how much green cover this growth has consumed, and in which wards.</p>
+<p>Green space matters for the city in three concrete ways. It lowers surface temperature, it lets low-lying paddy and wetland absorb monsoon water, and it is a direct measure of liveability (green area per person). Ward councillors and the corporation's planning office need these numbers at ward level, not as a single city-wide figure.</p>
+<p>The problem is also a big-data problem. One Sentinel-2 composite of the study area holds about 7 million 10 m pixels per band, and the analysis joins millions of pixels with ward polygons, road networks and 203,000 building footprints. Such joins are the core workload of spatial big-data systems. The project therefore had two aims:</p>
+<ol>
+<li><b>Substantive:</b> quantify green-to-built-up conversion in the 101 wards for 2000–2010–2017–2025, find where it clusters and which conditions predict it, and rank wards for action.</li>
+<li><b>Technical:</b> carry out the heavy spatial processing with the systems covered in the course—Spark with Apache Sedona (spatial partitioning and indexed joins), PostGIS (GiST indexes, KNN, table partitioning) and Spark MLlib FP-Growth—and measure what each system contributes.</li>
+</ol>
+
+<h2>2. Methodology</h2>
+
+<h3>2.1 Study area and base data</h3>
+<p>The study area is the Thiruvananthapuram Municipal Corporation, using the 2024 K-SMART ward delimitation (local body code C010100, 101 wards). Census 2011 wards do not match these boundaries, so population came from WorldPop gridded estimates summed to each ward. Roads, land-use tags and building footprints came from OpenStreetMap (Geofabrik southern-zone extract). All layers were projected to UTM zone 43N (EPSG:32643). Personal fields in the ward file (surveyor names and phone numbers) were dropped.</p>
+
+<h3>2.2 Satellite composites</h3>
+<p>For each epoch we built a median composite of all clear dry-season (November–April) observations in Google Earth Engine, to avoid monsoon cloud. Landsat 5 and 7 were combined over two dry seasons for 2000 and 2010, because one season of Landsat 5 alone gave no usable scenes for 2000. Landsat 8 was used for 2017, Landsat 8 and 9 for 2025, and Sentinel-2 L2A with Cloud Score+ masking (cs_cdf ≥ 0.60) for 2019 and 2025. Every composite covers ≥98.6% of the area with a median of 7–29 clear observations per pixel. NDVI, NDBI and MNDWI were added to the six reflectance bands.</p>
+
+<h3>2.3 Land-cover classification</h3>
+<p>Five classes were mapped: built-up, tree cover, other vegetation, water and bare/sand. Global reference products disagree strongly in this city: Dynamic World labels about 80% of the corporation as built-up, whereas ESA WorldCover labels most of it as trees, because both see the same coconut-canopy homesteads differently. Training labels for Sentinel-2 were therefore taken only where WorldCover and Dynamic World <i>agree</i>, with an extra check against GHSL built-up density. Landsat labels were taken from the Sentinel-2 2025 map aggregated to 30 m, so that both resolutions share one definition of each class. A Random Forest (200 trees, √p features per split) was trained on about 7,000 points per image, sampled in spatial blocks, and tested on about 3,000 held-out points. Land surface temperature was not used as a feature because Landsat LST is missing over roughly 20% of the area in every year.</p>
+
+<h3>2.4 A consistent change series</h3>
+<p>Maps classified independently for each year gave a nearly flat built-up trend (20.9% → 22.9%), which contradicts GHSL (13.2% → 21.3%). This is a known problem: small classification errors in each year add up to false change. We instead started from the 2025 map and stepped back one epoch at a time. A pixel keeps its later class unless its spectral change vector between the two composites exceeds a threshold (k standard deviations); only then does it take its own year's classification. We tested k from 0 to 1.5 and chose k = 0.25, the value whose built-up trend fits GHSL best (squared error 0.011). Tree cover and other vegetation cannot be separated reliably at 30 m, so the results report <i>total green</i> (tree + other vegetation).</p>
+
+<h3>2.5 Spatial big-data processing</h3>
+<p>Each 30 m pixel (451,000 in the corporation) and each 10 m pixel (4.04 million) was turned into a point carrying its class history. These points were processed in two systems:</p>
+<ul>
+<li><b>Apache Sedona on Spark (local mode).</b> A point-in-polygon join of pixels to wards was run four ways—plain Spark (nested loop), Sedona broadcast index join (R-tree), and Sedona partitioned joins with KDB-tree and Quadtree partitioning—and compared with GeoPandas at 0.1, 0.5, 1 and 4 million points. Sedona also computed distance to the nearest main road for every green pixel and aggregated change to 2,082 H3 hexagons (resolution 9).</li>
+<li><b>PostgreSQL 13 + PostGIS.</b> The same joins, a 1 km range query around Technopark and a KNN nearest-road query were run with and without GiST indexes. The pixel table was also range-partitioned into 30 partitions to test partition pruning. Query plans were recorded with <code>EXPLAIN ANALYZE</code>.</li>
+</ul>
+<p>Ward totals from Sedona, PostGIS and the raster pipeline were cross-checked; they differed by at most 0.46 percentage points.</p>
+
+<h3>2.6 Spatial analytics and decision support</h3>
+<ul>
+<li><b>Hotspots.</b> Global Moran's I and Getis-Ord Gi* (6-nearest-neighbour weights, 999 permutations, with false-discovery-rate correction) on hexagon conversion; DBSCAN (eps 100 m, 12 pixels) on the converted pixels to find compact development sites.</li>
+<li><b>Association rules.</b> Every 2000-green pixel became a transaction of discretised attributes: built-up density around it in 2000, distance to centre, roads and Technopark, elevation, slope, low-lying status, ward density, vegetation type and OSM land use. Spark MLlib FP-Growth (min. support 0.003, min. confidence 0.10) mined rules ending in “→ built-up” or “→ stayed green”.</li>
+<li><b>Case studies.</b> <i>Heat:</i> MODIS (1 km, complete coverage) and Landsat LST against green cover. <i>Floods:</i> conversion of low-lying land (MERIT Hydro HAND ≤ 5 m) and of the 2018 flood extent mapped from Sentinel-1. <i>Liveability:</i> green area per person.</li>
+<li><b>Ward priority index.</b> Seven ward indicators (long- and short-term green loss, share in Gi* hotspots, low-lying green converted, LST 2025, green per person, density) were min–max normalised and averaged. Three alternative weightings tested the ranking's stability.</li>
+<li><b>Dashboard.</b> A Streamlit application presents the maps, tables and ward rankings for non-specialist users.</li>
+</ul>
+
+<h2>3. Results</h2>
+
+<h3>3.1 Classification accuracy</h3>
+<p class="tcap">Table 1. Random Forest accuracy on held-out test points.</p>
+<table>
+<tr><th>Composite</th><th>Train / test points</th><th>Overall accuracy</th><th>Kappa</th><th>F1 built-up</th><th>F1 tree</th><th>F1 other veg.</th><th>F1 water</th></tr>
+<tr><td>Sentinel-2 2019</td><td>6,857 / 3,143</td><td>0.959</td><td>0.948</td><td>0.926</td><td>0.966</td><td>0.924</td><td>1.000</td></tr>
+<tr><td>Sentinel-2 2025</td><td>6,786 / 3,214</td><td>0.958</td><td>0.947</td><td>0.962</td><td>0.933</td><td>0.944</td><td>1.000</td></tr>
+<tr><td>Landsat 2000</td><td>6,989 / 3,011</td><td>0.709</td><td>0.635</td><td>0.722</td><td>0.692</td><td>0.428</td><td>0.984</td></tr>
+<tr><td>Landsat 2010</td><td>6,741 / 3,259</td><td>0.757</td><td>0.696</td><td>0.699</td><td>0.738</td><td>0.509</td><td>0.960</td></tr>
+<tr><td>Landsat 2017</td><td>6,990 / 3,010</td><td>0.823</td><td>0.778</td><td>0.724</td><td>0.814</td><td>0.592</td><td>0.994</td></tr>
+<tr><td>Landsat 2025</td><td>7,154 / 2,846</td><td>0.819</td><td>0.773</td><td>0.771</td><td>0.817</td><td>0.609</td><td>0.993</td></tr>
+</table>
+<p class="tnote">Test labels come from the same reference products as the training labels, so these figures measure agreement with the reference, not with field data.</p>
+<p>Sentinel-2 maps reach 96% accuracy. Landsat accuracy is lower (71–82%) and falls for older images, mainly because “other vegetation” is confused with tree cover (F1 0.43–0.61). This is why the results combine the two into total green. Built-up and water are classified consistently across all years.</p>
+
+<h3>3.2 How much green was lost</h3>
+<p class="tcap">Table 2. Green-cover change in the corporation (backdated Landsat series, km²).</p>
+<table>
+<tr><th>Period</th><th>Green at start</th><th>Green at end</th><th>Green lost</th><th>of which to built-up</th><th>Green gained</th><th>Net change</th><th>Loss per year</th></tr>
+<tr><td>2000–2010</td><td>165.15</td><td>161.50</td><td>7.10</td><td>5.26</td><td>3.44</td><td>−3.65 (−2.2%)</td><td>0.71</td></tr>
+<tr><td>2010–2017</td><td>161.50</td><td>159.35</td><td>4.37</td><td>2.94</td><td>2.22</td><td>−2.15 (−1.3%)</td><td>0.62</td></tr>
+<tr><td>2017–2025</td><td>159.35</td><td>157.72</td><td>4.19</td><td>3.43</td><td>2.56</td><td>−1.63 (−1.0%)</td><td>0.52</td></tr>
+<tr><td><b>2000–2025</b></td><td><b>165.15</b></td><td><b>157.72</b></td><td><b>13.34</b></td><td><b>12.17</b></td><td><b>5.91</b></td><td><b>−7.43 (−4.5%)</b></td><td><b>0.53</b></td></tr>
+</table>
+<p>Built-up land grew from 33.2 km² (15.6%) in 2000 to 48.8 km² (22.9%) in 2025, an increase of 47%. Green cover fell from 77.7% to 74.2%. Of the 13.3 km² of green that disappeared, 12.2 km² (91%) became built-up; the rest became water or bare land. Some loss was offset by 5.9 km² of new green, mostly former bare and sandy land along the north-western coast. The rate of loss slowed in each period, from 0.71 to 0.52 km² per year.</p>
+
+<figure>
+<img src="../outputs/maps/step4_change_2000_2025.png" style="width:58%">
+<figcaption><b>Figure 1.</b> Land-cover change 2000→2025. Red: green land that became built-up. Conversion spreads out from the dense core (grey) along the coastal highway to the south and along the main roads to the north and east. Green gains (dark green) are concentrated on the north-west coast.</figcaption>
+</figure>
+
+<h3>3.3 Big-data processing performance</h3>
+<p class="tcap">Table 3. Point-in-polygon join of pixels to 101 wards: run time in seconds.</p>
+<table>
+<tr><th>Points</th><th>Spark nested loop</th><th>Sedona broadcast R-tree</th><th>Sedona Quadtree</th><th>Sedona KDB-tree</th><th>GeoPandas (STRtree)</th></tr>
+<tr><td>0.10 M</td><td>4.4</td><td>0.31</td><td>0.67</td><td>1.13</td><td>0.04</td></tr>
+<tr><td>0.50 M</td><td>19.6</td><td>0.37</td><td>1.93</td><td>3.03</td><td>0.31</td></tr>
+<tr><td>1.00 M</td><td>40.2</td><td>0.71</td><td>3.83</td><td>6.56</td><td>0.76</td></tr>
+<tr><td>4.04 M</td><td>192.0</td><td>3.00</td><td>17.56</td><td>34.00</td><td>1.63</td></tr>
+</table>
+<p>A spatial index is the decisive factor. At 4 million points, Sedona's broadcast R-tree join is 64 times faster than plain Spark. Because the ward layer is small (101 polygons), broadcasting it to every worker beats partitioned joins. Of the two partitioners, Quadtree produced more balanced partitions than KDB-tree (coefficient of variation of points per partition 0.44 vs 1.79) and ran twice as fast. Spark's default hash partitioning gives perfectly equal partition sizes, but each partition spans almost the whole city (99.9% of the extent), so it gives no spatial pruning at all. On a single laptop GeoPandas is still the fastest. At this data size Sedona's value lies in how it scales to a cluster and to larger areas, not in raw single-machine speed.</p>
+
+<p class="tcap">Table 4. PostGIS queries with and without a GiST index (seconds).</p>
+<table>
+<tr><th>Query</th><th>No index</th><th>GiST index</th><th>Speed-up</th></tr>
+<tr><td>451 k pixels → wards (point-in-polygon)</td><td>4.29</td><td>0.53</td><td>8×</td></tr>
+<tr><td>203 k building centroids → wards</td><td>20.60</td><td>0.87</td><td>24×</td></tr>
+<tr><td>Range query: converted pixels within 1 km of Technopark</td><td>0.073</td><td>0.009</td><td>8×</td></tr>
+<tr><td>KNN: nearest main road for sampled green pixels</td><td>14.54</td><td>0.13</td><td>114×</td></tr>
+<tr><td>Partitioned table: 1 of 30 partitions vs all 30</td><td>0.076</td><td>0.010</td><td>8×</td></tr>
+</table>
+<p>In PostGIS the GiST index turns sequential scans into index scans; the KNN query gains most (114×) because the <code>&lt;-&gt;</code> operator can walk the index in distance order. Partition pruning reads 1 of 30 partitions when the query filters on the partition key. PostGIS and Sedona gave the same green→built-up total (12.17 km²).</p>
+
+<h3>3.4 Where the loss is concentrated</h3>
+<p>Conversion is strongly clustered (Moran's I = 0.485 for hexagons, 0.343 for wards; p = 0.001). Gi* found 262 hot hexagons at the 95% level (115 after FDR correction), holding 4.55 km² of conversion. DBSCAN grouped 57.5% of all converted pixels into 250 compact clusters. The largest are in Sreevaraham (0.44 km²), Kalippankulam (0.40 km²) and Chakkai (0.28 km²), all in the south of the core near the bypass and the airport. Cold spots—places that kept their green—lie on the northern, eastern and southern edges of the corporation.</p>
+
+<figure>
+<img src="../outputs/maps/step6_hotspots.png" style="width:92%">
+<figcaption><b>Figure 2.</b> Left: Getis-Ord Gi* hot and cold spots of green→built-up conversion on H3 hexagons. Right: DBSCAN clusters of converted pixels, with the eight largest labelled by ward.</figcaption>
+</figure>
+
+<h3>3.5 What predicts conversion</h3>
+<p>Distance to a road is a strong predictor. Green land within 100 m of a road was converted at 12.4%, compared with 2.3% at 1–2 km. Land within 250 m of a road accounts for 61% of all conversion.</p>
+<p class="tcap">Table 5. Strongest FP-Growth rules (182,192 transactions; base conversion rate 7.42%).</p>
+<table>
+<tr><th>Antecedent (green pixel in 2000)</th><th>Outcome</th><th>Area (km²)</th><th>Confidence</th><th>Lift</th></tr>
+<tr><td>high built-up around it &amp; &lt;3 km from centre &amp; flat</td><td>→ built-up</td><td>1.35</td><td>39.4%</td><td>5.31</td></tr>
+<tr><td>high built-up around it &amp; elevation &lt;10 m</td><td>→ built-up</td><td>1.67</td><td>35.4%</td><td>4.76</td></tr>
+<tr><td>high built-up around it &amp; flat &amp; high ward density</td><td>→ built-up</td><td>2.21</td><td>35.2%</td><td>4.75</td></tr>
+<tr><td>high built-up around it &amp; elevation 10–30 m</td><td>→ built-up</td><td>7.78</td><td>29.8%</td><td>4.02</td></tr>
+<tr><td>OSM land use = forest</td><td>→ stayed green</td><td>2.46</td><td>99.3%</td><td>1.07</td></tr>
+<tr><td>OSM land use = agriculture</td><td>→ stayed green</td><td>2.69</td><td>99.3%</td><td>1.07</td></tr>
+<tr><td>&gt;10 km from centre</td><td>→ stayed green</td><td>34.51</td><td>97.1%</td><td>1.05</td></tr>
+</table>
+<p>FP-Growth found 146 rules for conversion and 17 for staying green. The leading condition is <i>infill</i>: green land already surrounded by built-up land in 2000 was converted at 27%, against 3.5% where surroundings were green. Flat, low land near the centre was converted most often. Land tagged in OSM as forest, agriculture or wetland almost always stayed green.</p>
+
+<h3>3.6 Heat, flooding and green per person</h3>
+<ul>
+<li><b>Heat.</b> Wards with more green are cooler: ward green share against MODIS LST 2025 gives Spearman ρ = −0.77 (p &lt; 10<sup>−20</sup>). In 2025 Landsat LST averaged 38.7 °C on built-up land and 34.6 °C under tree cover. Pixels that changed from green to built-up warmed by 3.0 °C between 2000 and 2025, compared with 1.5 °C for stable green—an extra 1.6 °C.</li>
+<li><b>Low-lying land.</b> 7.8% of low-lying green land (HAND ≤ 5 m) was converted (2.95 km²), slightly more than upland (7.2%). The mapped 2018 flood extent inside the corporation was only 0.32 km², and almost no conversion occurred within it, so flood risk is discussed through low-lying land rather than the 2018 event.</li>
+<li><b>Green per person.</b> Green area per resident fell from 180 m² in 2000 to 171 m² in 2010 (WorldPop 2000–2020 release), and from 139 m² in 2017 to 132 m² in 2025 (WorldPop R2025A). The number of wards below 50 m² per person rose from 17 to 27. The two WorldPop releases are not comparable with each other, so the 2010→2017 step is not interpreted.</li>
+</ul>
+
+<h3>3.7 Ward priority</h3>
+<p>The top five wards on the priority index are Sreevaraham (95/100), Perunthanni (88), Kamaleswaram (86), Pettah (77) and Kalippankulam (74), all in the southern part of the core. The ranking is stable: across the four weighting schemes Spearman correlation with the equal-weight ranking is at least 0.967, and 16–19 of the top 20 wards stay in the top 20.</p>
+<figure>
+<img src="../outputs/maps/step6_priority.png" style="width:96%">
+<figcaption><b>Figure 3.</b> Ward priority index (equal weights). Left: map, with a bold outline for wards in the top 20 under all four weightings. Right: contribution of each indicator to the 15 highest-scoring wards, with the range of ranks across weightings.</figcaption>
+</figure>
+
+<h2>4. Discussion</h2>
+
+<h3>4.1 Interpreting the findings</h3>
+<p>Thiruvananthapuram lost about 4.5% of its green cover in 25 years. This is modest compared with the 47% growth of built-up land, because the city started very green and much new building took place inside existing homesteads. The loss is not spread evenly. It is concentrated in a belt south and west of the old core (Sreevaraham, Kalippankulam, Kamaleswaram, Chakkai, Pettah) and along the highways, where several wards lost 18–30 percentage points of their green cover. The association rules and road-distance results describe the same process: the city fills in gaps next to existing development and along roads, rather than leaping into open countryside. The slowing rate of loss after 2010 may reflect that the remaining green near the core is now scarce, not a change in policy; the data cannot separate these explanations.</p>
+<p>The heat case study gives the loss a practical consequence. Converted land warmed 1.6 °C more than land that stayed green, and the greenest wards are clearly the coolest. Protecting the remaining green in the priority wards, which are also among the hottest and densest, therefore has a direct cooling benefit. Land recorded as agriculture, forest or wetland in OSM almost always stayed green, which suggests that formal land-use designation is an effective form of protection.</p>
+
+<h3>4.2 What the big-data tools contributed</h3>
+<p>The benchmarks support three lessons from the course. First, a spatial index matters more than the choice of engine: an R-tree in Sedona or a GiST index in PostGIS gave 8–114 times speed-ups, while plain Spark without spatial support scaled poorly. Second, spatial partitioning must follow the data: hash partitioning balances load but ignores space, while Quadtree partitions adapted to the dense urban core. Third, for a single city at 4 million points a single machine is still enough; Sedona becomes necessary when the same workflow is extended to the whole state, to 10 m pixels for every year, or to building-level analysis. PostGIS was the most convenient for repeated, indexed ward and distance queries, while Spark was the natural place to run FP-Growth over 182,000 transactions. Running the same analysis in both systems also served as a correctness check.</p>
+
+<h3>4.3 Limitations</h3>
+<ul>
+<li><b>Accuracy reference.</b> Accuracy was measured against labels derived from global products, not field data. Landsat 2000 has the lowest accuracy (71%), and its 6.7% bare/sand share is suspect; this drives the apparent green gains in north-western coastal wards such as Pallithura.</li>
+<li><b>Mixed pixels.</b> At 30 m, a homestead with a new house under coconut canopy is often still classed as green, so conversion is probably underestimated, especially before 2017.</li>
+<li><b>Backdating.</b> The consistent series depends on the choice of k and on GHSL as a reference. Values of k from 0 to 0.5 give a total green loss of 4.3 to 2.7 percentage points (3.5 at the chosen k = 0.25).</li>
+<li><b>Other data.</b> LST at 1 km (MODIS) is coarse, Landsat LST is missing for part of the area, population releases cannot be compared across 2010–2017, and OSM completeness varies.</li>
+<li><b>Computing.</b> Sedona ran in local mode on one machine; no multi-node cluster was tested.</li>
+</ul>
+
+<h3>4.4 Conclusions and future work</h3>
+<p>Between 2000 and 2025 Thiruvananthapuram converted 12.2 km² of green land to built-up, mostly through infill near roads and existing development in the southern and central wards. These wards are also the hottest and have the least green per person. The ward priority index, stable across weightings, gives the corporation a defensible short-list of wards for green-space protection and tree planting. Future work should add field or high-resolution validation points, use building footprints over time to capture conversion hidden under canopy, extend the workflow to the surrounding panchayats on a real Spark cluster, and update the dashboard each dry season.</p>
+
+<h2>References</h2>
+<ol class="refs">
+<li>Breiman, L. (2001). Random forests. <i>Machine Learning</i>, 45, 5–32.</li>
+<li>Brown, C. F. et al. (2022). Dynamic World, near real-time global 10 m land use land cover mapping. <i>Scientific Data</i>, 9, 251.</li>
+<li>Zanaga, D. et al. (2022). ESA WorldCover 10 m 2021 v200. Zenodo.</li>
+<li>Pesaresi, M. et al. (2023). GHS-BUILT-S R2023A – GHS built-up surface grid. European Commission, Joint Research Centre.</li>
+<li>Gorelick, N. et al. (2017). Google Earth Engine: planetary-scale geospatial analysis for everyone. <i>Remote Sensing of Environment</i>, 202, 18–27.</li>
+<li>Yu, J., Zhang, Z., Sarwat, M. (2019). Spatial data management in Apache Spark: the GeoSpark perspective and beyond. <i>GeoInformatica</i>, 23, 37–78.</li>
+<li>Han, J., Pei, J., Yin, Y. (2000). Mining frequent patterns without candidate generation. <i>Proc. ACM SIGMOD</i>, 1–12.</li>
+<li>Getis, A., Ord, J. K. (1992). The analysis of spatial association by use of distance statistics. <i>Geographical Analysis</i>, 24(3), 189–206.</li>
+<li>Ester, M., Kriegel, H.-P., Sander, J., Xu, X. (1996). A density-based algorithm for discovering clusters in large spatial databases with noise. <i>Proc. KDD</i>, 226–231.</li>
+<li>Yamazaki, D. et al. (2019). MERIT Hydro: a high-resolution global hydrography map. <i>Water Resources Research</i>, 55, 5053–5073.</li>
+<li>WorldPop (2018, 2025). Global high-resolution population denominators. University of Southampton.</li>
+<li>Kerala Local Self Government Department (2024). K-SMART ward delimitation boundaries.</li>
+</ol>
+
+</body>
+</html>
