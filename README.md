@@ -1,6 +1,6 @@
 # Urban Expansion and Green Space Loss in Thiruvananthapuram (2000–2025)
 
-MSc (Semester 3) Spatial Big Data course project, Digital University Kerala, November 2026.
+Spatial Big Data course project, MSc Data Science with Geoinformatics, Digital University Kerala, November 2026.
 
 This project measures how much green cover the 101 wards of Thiruvananthapuram Municipal Corporation lost to urban
 expansion between 2000 and 2025. It also shows where the loss happened and which conditions made it more likely.
